@@ -7,6 +7,7 @@ module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
     popup: path.resolve("src/popup/popup.tsx"),
+    options: path.resolve("src/options/options.tsx"),
   },
   output: {
     filename: "[name].js",
@@ -19,24 +20,44 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /node_modules/,
       },
+      {
+        use: ["style-loader", "css-loader"],
+        test: /\.css$/i,
+      },
+      {
+        type: "asset/resource",
+        test: /\.(jpg|jpeg|png|woff|woff2|ttf|svg)$/,
+      },
     ],
   },
   plugins: [
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve("src/manifest.json"),
+          from: path.resolve("src/static"),
           to: path.resolve("dist"),
         },
       ],
     }),
-    new HtmlPlugin({
-      title: "Weather Chrome Extension",
-      filename: "popup.html",
-      chunks: ["popup"],
-    }),
+    ...getHtmlPlugins(["popup", "options"]),
   ],
   resolve: {
     extensions: [".ts", ".js", ".tsx"],
   },
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+    },
+  },
 };
+
+function getHtmlPlugins(chunks) {
+  return chunks.map(
+    (chunk) =>
+      new HtmlPlugin({
+        title: "Weather Chrome Extension",
+        filename: `${chunk}.html`,
+        chunks: [chunk],
+      })
+  );
+}
