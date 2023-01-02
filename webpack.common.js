@@ -1,32 +1,32 @@
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
+const HtmlPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
   entry: {
-    popup: path.resolve("src/popup/popup.tsx"),
-    options: path.resolve("src/options/options.tsx"),
-    background: path.resolve("src/background/background.ts"),
-    contentScript: path.resolve("src/contentScript/contentScript.ts"),
+    popup: path.resolve('src/popup/popup.tsx'),
+    options: path.resolve('src/options/options.tsx'),
+    background: path.resolve('src/background/background.ts'),
+    contentScript: path.resolve('src/contentScript/contentScript.ts'),
   },
   output: {
-    filename: "[name].js",
-    path: path.resolve("dist"),
+    filename: '[name].js',
+    path: path.resolve('dist'),
   },
   module: {
     rules: [
       {
-        use: "ts-loader",
+        use: 'ts-loader',
         test: /\.tsx?$/,
         exclude: /node_modules/,
       },
       {
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
         test: /\.css$/i,
       },
       {
-        type: "asset/resource",
+        type: 'asset/resource',
         test: /\.(jpg|jpeg|png|woff|woff2|ttf|svg)$/,
       },
     ],
@@ -38,30 +38,30 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve("src/static"),
-          to: path.resolve("dist"),
+          from: path.resolve('src/static'),
+          to: path.resolve('dist'),
         },
       ],
     }),
-    ...getHtmlPlugins(["popup", "options"]),
+    ...getHtmlPlugins(['popup', 'options']),
   ],
   resolve: {
-    extensions: [".ts", ".js", ".tsx"],
+    extensions: ['.ts', '.js', '.tsx'],
   },
   optimization: {
     splitChunks: {
-      chunks: "all",
+      chunks: 'all',
     },
   },
-};
+}
 
 function getHtmlPlugins(chunks) {
   return chunks.map(
     (chunk) =>
       new HtmlPlugin({
-        title: "Weather Chrome Extension",
+        title: 'Weather Chrome Extension',
         filename: `${chunk}.html`,
         chunks: [chunk],
       })
-  );
+  )
 }
