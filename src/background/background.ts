@@ -1,4 +1,9 @@
+import { setStoredCities, setStoredOptions } from '../utils/storage'
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log({ msg, sender });
-  sendResponse("from bgscript");
-});
+  // sendResponse("from bgscript");
+  setStoredCities([])
+  setStoredOptions({
+    tempScale: 'metric',
+  })
+})
